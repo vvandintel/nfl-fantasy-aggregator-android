@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api">http://api.fantasy.nfl.com/v1</string>
+    <string-array name="position">
+        <item>QB</item>
+        <item>RB</item>
+        <item>WR</item>
+        <item>TE</item>
+        <item>K</item>
+        <item>DEF</item>
+    </string-array>
+</resources>
