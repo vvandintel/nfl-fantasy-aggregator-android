@@ -5,8 +5,6 @@ package com.vincentvandintel.fantasyaggregator.model;
  */
 
 public class Leader {
-    private String firstName;
-
     public String getFirstName() {
         return firstName;
     }
@@ -71,6 +69,7 @@ public class Leader {
         this.playerId = playerId;
     }
 
+    private String firstName;
     private String lastName;
     private String position;
     private int rank;

@@ -1,4 +1,4 @@
-package com.vincentvandintel.fantasyaggregator.util;
+package com.vincentvandintel.fantasyaggregator.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
