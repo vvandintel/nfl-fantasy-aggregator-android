@@ -4,4 +4,8 @@
     <string name="get_leaders_text">Get Scoring Leaders</string>
     <string name="get_leaders_button_text">Submit</string>
     <string name="greeting">Welcome to the NFL Fantasy Aggregator!</string>
+    <string name="get_leaders_menu_item_title">Get Scoring Leaders</string>
+    <string name="get_player_rankings_menu_item_title">Get Weekly Rankings</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

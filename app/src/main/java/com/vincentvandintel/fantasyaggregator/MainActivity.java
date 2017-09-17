@@ -2,6 +2,10 @@ package com.vincentvandintel.fantasyaggregator;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,7 +34,7 @@ import java.util.ArrayList;
 
 import static com.vincentvandintel.fantasyaggregator.R.array.position;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +45,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+     //   setupNavigationDrawer(toolbar);
         // Create spinner dropdown of leader positions
         initializePositionSpinner();
+    }
+
+    private void setupNavigationDrawer(Toolbar toolbar) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
+                MainActivity.this,
+                drawer,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+
+        drawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.left_drawer);
+        navigationView.setNavigationItemSelectedListener(MainActivity.this);
     }
 
     private void initializePositionSpinner() {
@@ -120,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_navigation, menu);
         return true;
     }
 
@@ -132,10 +154,43 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        int menuItemId = menuItem.getItemId();
+
+//        if (menuItemId == R.id.nav_camera) {
+//
+//        } else if (menuItemId == R.id.nav_gallery) {
+//
+//        } else if (menuItemId == R.id.nav_slideshow) {
+//
+//        } else if (menuItemId == R.id.nav_manage) {
+//
+//        } else if (menuItemId == R.id.nav_share) {
+//
+//        } else if (menuItemId == R.id.nav_send) {
+//
+//        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
