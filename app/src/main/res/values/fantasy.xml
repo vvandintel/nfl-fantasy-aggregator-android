@@ -9,4 +9,5 @@
         <item>K</item>
         <item>DEF</item>
     </string-array>
+    <string name = "position_text">Select Position: </string>
 </resources>
