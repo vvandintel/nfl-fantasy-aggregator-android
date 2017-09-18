@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-     //   setupNavigationDrawer(toolbar);
+        setupNavigationDrawer(toolbar);
         // Create spinner dropdown of leader positions
         initializePositionSpinner();
     }
@@ -57,8 +57,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 drawer,
                 toolbar,
                 R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        );
+                R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerClosed(View v){
+                super.onDrawerClosed(v);
+            }
+
+            @Override
+            public void onDrawerOpened(View v) {
+                super.onDrawerOpened(v);
+            }
+        };
 
         drawer.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
@@ -164,23 +173,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         int menuItemId = menuItem.getItemId();
-
-//        if (menuItemId == R.id.nav_camera) {
-//
-//        } else if (menuItemId == R.id.nav_gallery) {
-//
-//        } else if (menuItemId == R.id.nav_slideshow) {
-//
-//        } else if (menuItemId == R.id.nav_manage) {
-//
-//        } else if (menuItemId == R.id.nav_share) {
-//
-//        } else if (menuItemId == R.id.nav_send) {
-//
-//        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+
+        switch (menuItemId){
+            case R.id.get_leaders_menu_item:
+              //  Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
+                drawer.closeDrawers();
+                break;
+            case R.id.get_player_rankings_menu_item:
+               // Toast.makeText(getApplicationContext(),"Settings",Toast.LENGTH_SHORT).show();
+                drawer.closeDrawers();
+                break;
+
+        }
+
         return true;
     }
 
