@@ -1,5 +1,6 @@
 package com.vincentvandintel.fantasyaggregator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,8 +23,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.vincentvandintel.fantasyaggregator.activity.RankedLeadersActivity;
 import com.vincentvandintel.fantasyaggregator.adapter.LeadersAdapter;
-import com.vincentvandintel.fantasyaggregator.model.Leader;
+import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 import com.vincentvandintel.fantasyaggregator.request.RequestSingleton;
 import com.vincentvandintel.fantasyaggregator.util.Fantasy;
 
@@ -111,16 +113,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void displayLeaders(JSONObject response, String position) throws JSONException {
         Fantasy fantasy = new Fantasy();
-        ArrayList<Leader> leaders = fantasy.formatLeaders(response, position);
+        ArrayList<ScoringLeader> leaders = fantasy.formatLeaders(response, position);
         Log.v("Leaders", "Leaders are: " + leaders);
         LeadersAdapter leaderListAdapter = new LeadersAdapter(MainActivity.this, leaders);
-        ListView leadersListView = (ListView) findViewById(R.id.leaders_list_view);
+        ListView leadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
         leadersListView.setAdapter(leaderListAdapter);
     }
 
-    private void getLeaderData(String api, final String position, int count) {
-        String url = new StringBuilder(api).append("/players/scoringleaders?format=json&sort=pts&count=")
-                .append(count).append("&position=").append(position).toString();
+    private void getLeaderData(String api, final String position, String dataType, int count) {
+        String url = new StringBuilder(api)
+                .append("/players/")
+                .append(dataType)
+                .append("?format=json&sort=pts&count=")
+                .append(count)
+                .append("&position=")
+                .append(position)
+                .toString();
 
         JsonObjectRequest jsObjRequest = initializeLeaders(position, url);
         RequestSingleton.getInstance(this).addToRequestQueue(jsObjRequest);
@@ -145,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // send HTTP request to NFL API for scoring leaders
         String api = getString(R.string.api);
         String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
-        getLeaderData(api, leaderPosition, 5);
+        getLeaderData(api, leaderPosition, "scoringleaders", 5);
     }
 
     @Override
@@ -177,12 +185,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         switch (menuItemId){
             case R.id.get_leaders_menu_item:
-              //  Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
                 drawer.closeDrawers();
                 break;
             case R.id.get_player_rankings_menu_item:
-               // Toast.makeText(getApplicationContext(),"Settings",Toast.LENGTH_SHORT).show();
                 drawer.closeDrawers();
+                Intent intent = new Intent(MainActivity.this, RankedLeadersActivity.class);
+                startActivity(intent);
+                this.overridePendingTransition(0, 0);
                 break;
 
         }

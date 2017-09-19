@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vincentvandintel.fantasyaggregator.model.Leader;
+import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,15 +20,15 @@ public class Fantasy {
     public Fantasy() {
     }
 
-    public ArrayList<Leader> formatLeaders(JSONObject response, String position) throws JSONException {
+    public ArrayList<ScoringLeader> formatLeaders(JSONObject response, String position) throws JSONException {
         JSONObject positions = response.getJSONObject("positions");
         String positionLeaders = positions.getJSONArray(position).toString();
         Log.v("Position Leaders", "Position Leaders are " + positionLeaders);
 
         Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<Leader>>(){}.getType();
+        Type type = new TypeToken<ArrayList<ScoringLeader>>(){}.getType();
 
-        ArrayList<Leader> leaders = new ArrayList<Leader>();
+        ArrayList<ScoringLeader> leaders = new ArrayList<ScoringLeader>();
 
         try {
             leaders = gson.fromJson(positionLeaders, type);
