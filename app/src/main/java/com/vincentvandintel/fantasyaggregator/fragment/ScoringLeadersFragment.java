@@ -14,10 +14,14 @@ import com.vincentvandintel.fantasyaggregator.R;
  */
 
 public class ScoringLeadersFragment extends Fragment {
+    public ScoringLeadersFragment() {
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.scoring_leaders, container, false);
-        return view;
+        return inflater.inflate(R.layout.scoring_leaders, container, false);
     }
 }

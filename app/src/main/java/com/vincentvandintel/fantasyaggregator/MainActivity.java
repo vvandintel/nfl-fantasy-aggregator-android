@@ -1,6 +1,7 @@
 package com.vincentvandintel.fantasyaggregator;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -25,6 +26,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.vincentvandintel.fantasyaggregator.activity.RankedLeadersActivity;
 import com.vincentvandintel.fantasyaggregator.adapter.LeadersAdapter;
+import com.vincentvandintel.fantasyaggregator.fragment.LeadersFragment;
+import com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment;
 import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 import com.vincentvandintel.fantasyaggregator.request.RequestSingleton;
 import com.vincentvandintel.fantasyaggregator.util.Fantasy;
@@ -36,20 +39,50 @@ import java.util.ArrayList;
 
 import static com.vincentvandintel.fantasyaggregator.R.array.position;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, LeadersFragment.OnFragmentInteractionListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupView();
+        setupView(savedInstanceState);
     }
 
-    private void setupView() {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+     //Create spinner dropdown of leader positions
+        if (findViewById(R.id.position_spinner) == null) {
+            return;
+        }
+
+        initializePositionSpinner();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri){
+    }
+
+    private void setupView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+        setupFantasyFragment(savedInstanceState);
+        if (findViewById(R.id.toolbar) == null) {
+            return;
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupNavigationDrawer(toolbar);
-        // Create spinner dropdown of leader positions
-        initializePositionSpinner();
+    }
+
+    private void setupFantasyFragment(Bundle savedInstanceState) {
+        if (findViewById(R.id.fantasy_fragment_container) == null || savedInstanceState != null) {
+            return;
+        }
+            ScoringLeadersFragment scoringLeadersFragment = new ScoringLeadersFragment();
+            scoringLeadersFragment.setArguments(getIntent().getExtras());
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fantasy_fragment_container, scoringLeadersFragment)
+                    .commitNow();
     }
 
     private void setupNavigationDrawer(Toolbar toolbar) {

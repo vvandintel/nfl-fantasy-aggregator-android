@@ -8,6 +8,8 @@
     tools:context="com.vincentvandintel.fantasyaggregator.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <include layout="@layout/scoring_leaders" />
+    <!--<include layout="@layout/scoring_leaders" />-->
+    <include layout="@layout/fantasy_fragment_container" />
+    <!--<include layout="@layout/fragment_leaders" />-->
 
 </android.support.constraint.ConstraintLayout>
