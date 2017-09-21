@@ -20,5 +20,5 @@
             android:paddingEnd="2dp" />
 
     </TableRow>
-
+    
 </TableLayout>

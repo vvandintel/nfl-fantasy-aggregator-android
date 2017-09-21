@@ -4,9 +4,7 @@ package com.vincentvandintel.fantasyaggregator.model;
  * Created by vvand on 9/11/2017.
  */
 
-public class Leader {
-    private String firstName;
-
+public class ScoringLeader {
     public String getFirstName() {
         return firstName;
     }
@@ -71,6 +69,7 @@ public class Leader {
         this.playerId = playerId;
     }
 
+    private String firstName;
     private String lastName;
     private String position;
     private int rank;
@@ -79,6 +78,6 @@ public class Leader {
     private String projectedPts;
     private String playerId;
 
-    public Leader() {
+    public ScoringLeader() {
     }
 }
