@@ -1,7 +1,6 @@
 package com.vincentvandintel.fantasyaggregator;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -26,7 +25,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.vincentvandintel.fantasyaggregator.activity.RankedLeadersActivity;
 import com.vincentvandintel.fantasyaggregator.adapter.LeadersAdapter;
-import com.vincentvandintel.fantasyaggregator.fragment.LeadersFragment;
 import com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment;
 import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 import com.vincentvandintel.fantasyaggregator.request.RequestSingleton;
@@ -39,7 +37,7 @@ import java.util.ArrayList;
 
 import static com.vincentvandintel.fantasyaggregator.R.array.position;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, LeadersFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +53,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         initializePositionSpinner();
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri){
     }
 
     private void setupView(Bundle savedInstanceState) {
@@ -181,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
-    public void onClick(View v) {
+    @Override
+    public void onClick(View view) {
         // Code here executes on main thread after user presses button
         // send HTTP request to NFL API for scoring leaders
         String api = getString(R.string.api);

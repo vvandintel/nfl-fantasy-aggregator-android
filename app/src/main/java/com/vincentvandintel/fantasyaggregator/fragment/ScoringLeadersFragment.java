@@ -14,10 +14,6 @@ import com.vincentvandintel.fantasyaggregator.R;
  */
 
 public class ScoringLeadersFragment extends Fragment {
-    public ScoringLeadersFragment() {
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
