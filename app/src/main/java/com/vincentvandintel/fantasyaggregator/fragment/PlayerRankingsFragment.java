@@ -14,12 +14,12 @@ import com.vincentvandintel.fantasyaggregator.R;
  * Created by vvand on 9/17/2017.
  */
 
-public class ScoringLeadersFragment extends Fragment /*implements AdapterView.OnItemSelectedListener, View.OnClickListener*/ {
+public class PlayerRankingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.scoring_leaders_fragment, container, false);
+        return inflater.inflate(R.layout.ranked_leaders_fragment, container, false);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ScoringLeadersFragment extends Fragment /*implements AdapterView.On
         super.onStart();
 
         //((YourActivityClassName)getActivity()).yourPublicMethod();
-       // (MainActivity)getActivity().init
+        // (MainActivity)getActivity().init
         MainActivity activity = (MainActivity) getActivity();
         activity.initializePositionSpinner();
     }
