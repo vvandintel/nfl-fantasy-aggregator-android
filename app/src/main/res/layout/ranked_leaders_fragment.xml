@@ -29,7 +29,7 @@
     <include layout="@layout/get_leaders" />
 
     <ListView
-        android:id="@+id/leaders_list_view"
+        android:id="@+id/ranked_leaders_list_view"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,6 +37,6 @@
         android:layout_marginEnd="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/get_leaders" />
 
 </android.support.constraint.ConstraintLayout>
