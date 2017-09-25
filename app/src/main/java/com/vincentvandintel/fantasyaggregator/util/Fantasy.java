@@ -41,7 +41,7 @@ public class Fantasy {
     }
 
     public ArrayList<RankedLeader> formatRankedLeaders(JSONObject response) throws JSONException {
-      //  String playerLeaders = players.getJSONArray(position).toString();
+        //  String playerLeaders = players.getJSONArray(position).toString();
         String players = response.getJSONArray("players").toString();
         Log.v("info", "Player Leaders are " + players);
 

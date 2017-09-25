@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ranked_leaders_fragment"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scoring_leaders_fragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context="com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment"
+    android:name="com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment"
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
     android:paddingTop="10dp"
@@ -17,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="100dp"
         android:gravity="center"
-        android:text="@string/get_scoring_leaders_text"
+        android:text="@string/get_ranked_leaders_text"
         android:layout_margin="20dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="30dp"
@@ -38,7 +40,7 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <ListView
-        android:id="@+id/scoring_leaders_list_view"
+        android:id="@+id/ranked_leaders_list_view"
         android:gravity="center"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -2,10 +2,10 @@
 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:gravity="center"
     android:id="@+id/get_leaders"
-    app:layout_constraintTop_toBottomOf="@+id/title_layout" >
+    app:layout_constraintTop_toBottomOf="@+id/get_leaders_text" >
 
     <TextView
         android:id="@+id/position_text"

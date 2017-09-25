@@ -30,14 +30,28 @@ public class ScoringLeadersAdapter extends ArrayAdapter<ScoringLeader> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.scoring_leaders_list, parent, false);
         }
         // Lookup view for data population
-        TextView name = (TextView) convertView.findViewById(R.id.name);
-        TextView points = (TextView) convertView.findViewById(R.id.pts);
+        TextView title = (TextView) convertView.findViewById(R.id.scoring_leader_name);
+        TextView points = (TextView) convertView.findViewById(R.id.scoring_leader_points);
+        TextView stats = (TextView) convertView.findViewById(R.id.scoring_leader_stats);
+        TextView game = (TextView) convertView.findViewById(R.id.scoring_leader_game);
+
         // Populate the data into the template view using the data object
-        String nameText = new StringBuilder(leader.getFirstName()).append(" ").append(leader.getLastName()).toString();
+        String titleText = leader.getFirstName()
+                .concat(" ")
+                .concat(leader.getLastName());
+        String gameText = "Game: "
+                .concat(leader.getTeamAbbr())
+                .concat(" versus ")
+                .concat(leader.getOpponentTeamAbbr());;
         String pointsText = leader.getPts();
+        String statsText = leader.getStatsLine();
+
         if (pointsText.equals("false")) pointsText = "0.00";
-        name.setText(nameText);
-        points.setText(pointsText);
+
+        title.setText(titleText);
+        points.setText(pointsText.concat(" points"));
+        stats.setText(statsText);
+        game.setText(gameText);
 
         // Return the completed view to render on screen
         return convertView;

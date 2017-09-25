@@ -25,7 +25,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankings;
+import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankingsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.ScoringLeadersAdapter;
 import com.vincentvandintel.fantasyaggregator.fragment.PlayerRankingsFragment;
 import com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment;
@@ -64,12 +64,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (findViewById(R.id.fantasy_fragment_container) == null || savedInstanceState != null) {
             return;
         }
-            ScoringLeadersFragment scoringLeadersFragment = new ScoringLeadersFragment();
-            scoringLeadersFragment.setArguments(getIntent().getExtras());
-            getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fantasy_fragment_container, scoringLeadersFragment)
-                    .commitNow();
+        ScoringLeadersFragment scoringLeadersFragment = new ScoringLeadersFragment();
+        scoringLeadersFragment.setArguments(getIntent().getExtras());
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.fantasy_fragment_container, scoringLeadersFragment)
+                .commitNow();
     }
 
     private void setupNavigationDrawer(Toolbar toolbar) {
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
         ArrayList<RankedLeader> rankedLeaders = fantasy.formatRankedLeaders(response);
         Log.v("Ranked Leaders", "Ranked Leaders are: " + rankedLeaders);
-        PlayerRankings rankedLeadersListAdapter = new PlayerRankings(MainActivity.this, rankedLeaders);
+        PlayerRankingsAdapter rankedLeadersListAdapter = new PlayerRankingsAdapter(MainActivity.this, rankedLeaders);
         ListView rankedLeadersListView = (ListView) findViewById(R.id.ranked_leaders_list_view);
         rankedLeadersListView.setAdapter(rankedLeadersListAdapter);
     }
