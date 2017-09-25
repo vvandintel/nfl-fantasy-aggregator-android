@@ -26,8 +26,8 @@ public class PlayerRankingsFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onActivityCreated(Bundle bundle) {
+        super.onActivityCreated(bundle);
 
         Log.v("info", "Starting up attached fragment PlayerRankingsFragment");
 
