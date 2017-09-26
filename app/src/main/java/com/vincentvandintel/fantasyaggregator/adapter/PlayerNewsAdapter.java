@@ -5,4 +5,5 @@ package com.vincentvandintel.fantasyaggregator.adapter;
  */
 
 public class PlayerNewsAdapter {
+
 }

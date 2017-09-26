@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankingsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.ScoringLeadersAdapter;
+import com.vincentvandintel.fantasyaggregator.fragment.PlayerNewsFragment;
 import com.vincentvandintel.fantasyaggregator.fragment.PlayerRankingsFragment;
 import com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment;
 import com.vincentvandintel.fantasyaggregator.model.RankedLeader;
@@ -241,10 +242,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.get_player_rankings_menu_item:
                 replaceWithPlayerRankingsFragment(drawer);
                 break;
+            case R.id.get_player_news_menu_item:
+                replaceWithPlayerNewsFragment(drawer);
+                break;
 
         }
 
         return true;
+    }
+
+    private void replaceWithPlayerNewsFragment(DrawerLayout drawer) {
+        Log.v("info", "Replacing current fragment with PlayerNewsFragment");
+        PlayerNewsFragment playerNewsFragment = new PlayerNewsFragment();
+        playerNewsFragment.setArguments(getIntent().getExtras());
+        replaceFantasyFragment(playerNewsFragment);
+        drawer.closeDrawers();
     }
 
     private void replaceWithPlayerRankingsFragment(DrawerLayout drawer) {
