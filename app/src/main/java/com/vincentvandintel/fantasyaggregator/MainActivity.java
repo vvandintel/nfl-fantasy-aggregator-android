@@ -237,44 +237,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         switch (menuItemId){
             case R.id.get_leaders_menu_item:
-                replaceWithScoringLeadersFragment(drawer);
+                replaceWithScoringLeadersFragment();
                 break;
             case R.id.get_player_rankings_menu_item:
-                replaceWithPlayerRankingsFragment(drawer);
+                replaceWithPlayerRankingsFragment();
                 break;
             case R.id.get_player_news_menu_item:
-                replaceWithPlayerNewsFragment(drawer);
+                replaceWithPlayerNewsFragment();
                 break;
 
         }
 
+        drawer.closeDrawers();
+
         return true;
     }
 
-    private void replaceWithPlayerNewsFragment(DrawerLayout drawer) {
+    private void replaceWithPlayerNewsFragment() {
         Log.v("info", "Replacing current fragment with PlayerNewsFragment");
         PlayerNewsFragment playerNewsFragment = new PlayerNewsFragment();
         playerNewsFragment.setArguments(getIntent().getExtras());
         replaceFantasyFragment(playerNewsFragment);
-        drawer.closeDrawers();
     }
 
-    private void replaceWithPlayerRankingsFragment(DrawerLayout drawer) {
+    private void replaceWithPlayerRankingsFragment() {
         Log.v("info", "Replacing current fragment with PlayerRankingsFragment");
         PlayerRankingsFragment playerRankingsFragment = new PlayerRankingsFragment();
         playerRankingsFragment.setArguments(getIntent().getExtras());
         replaceFantasyFragment(playerRankingsFragment);
-        initializePositionSpinner();
-        drawer.closeDrawers();
     }
 
-    private void replaceWithScoringLeadersFragment(DrawerLayout drawer) {
+    private void replaceWithScoringLeadersFragment() {
         Log.v("info", "Replacing current fragment with ScoringLeadersFragment");
         ScoringLeadersFragment scoringLeadersFragment = new ScoringLeadersFragment();
         scoringLeadersFragment.setArguments(getIntent().getExtras());
         replaceFantasyFragment(scoringLeadersFragment);
-        initializePositionSpinner();
-        drawer.closeDrawers();
     }
 
     private void replaceFantasyFragment(Fragment fragment) {
