@@ -11,15 +11,14 @@ import com.vincentvandintel.fantasyaggregator.R;
  */
 
 public class PlayerNewsCardViewHolder extends RecyclerView.ViewHolder {
-    public TextView name, position, team, time, content;
+    public TextView name, time, content, info;
 
     public PlayerNewsCardViewHolder(View view) {
         super(view);
 
         name = (TextView) view.findViewById(R.id.player_news_name);
-        position = (TextView) view.findViewById(R.id.player_news_position);
-        team = (TextView) view.findViewById(R.id.player_news_team);
-        time = (TextView) view.findViewById(R.id.player_news_time);
+        info = (TextView) view.findViewById(R.id.player_news_info);
+//        time = (TextView) view.findViewById(R.id.player_news_time);
         content = (TextView) view.findViewById(R.id.player_news_content);
     }
 }

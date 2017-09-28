@@ -28,11 +28,11 @@ public class PlayerNewsFragment extends Fragment {
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
 
-        Log.v("info", "Starting up attached fragment PlayerRankingsFragment");
+        Log.v("info", "Starting up attached fragment PlayerNewFragment");
         MainActivity activity = (MainActivity) getActivity();
         activity.getPreferences(MODE_PRIVATE).edit().putString("fantasyDataType", "news").apply();
-       // String api = activity.getResources().getString(R.string.api);
-        String api = "http://api.fantasy.nfl.com/v1";
+        String api = activity.getResources().getString(R.string.api);
+      //  String api = "http://api.fantasy.nfl.com/v1";
         activity.getFantasyData(api, 25);
     }
 

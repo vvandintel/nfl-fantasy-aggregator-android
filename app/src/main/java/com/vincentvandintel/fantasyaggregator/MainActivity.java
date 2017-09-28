@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(MainActivity.this, playerNews);
         RecyclerView playerNewsRecyclerView = (RecyclerView) findViewById(R.id.player_news_recycler_view);
 
-        RecyclerView.LayoutManager playerNewsLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager playerNewsLayoutManager = new LinearLayoutManager(MainActivity.this);
         playerNewsRecyclerView.setLayoutManager(playerNewsLayoutManager);
         playerNewsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         playerNewsRecyclerView.setAdapter(playerNewsAdapter);

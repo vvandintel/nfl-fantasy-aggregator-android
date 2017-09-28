@@ -2,6 +2,7 @@ package com.vincentvandintel.fantasyaggregator.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,6 @@ import com.vincentvandintel.fantasyaggregator.model.PlayerNewsItem;
 import com.vincentvandintel.fantasyaggregator.viewHolder.PlayerNewsCardViewHolder;
 
 import java.util.ArrayList;
-
-import static com.vincentvandintel.fantasyaggregator.R.array.position;
 
 /**
  * Created by vvand on 9/25/2017.
@@ -37,18 +36,23 @@ public class PlayerNewsAdapter extends RecyclerView.Adapter<PlayerNewsCardViewHo
 
     @Override
     public void onBindViewHolder(PlayerNewsCardViewHolder holder, int cardPosition) {
-        PlayerNewsItem player = playerNewsItems.get(position);
+        Log.v("info", "Player news in onBindViewHolder is".concat(playerNewsItems.toString()));
+        Log.v("CardPosition", "Card position is ".concat(Integer.toString(cardPosition)));
+        PlayerNewsItem player = playerNewsItems.get(cardPosition);
         String name = player.getFirstName().concat(" ").concat(player.getLastName());
-        String position =  player.getPosition();
-        String team = player.getTeamAbbr();
-        String time = player.getTimestamp();
-        String content = player.getBody().concat(" ").concat(player.getAnalysis());
+        String info = player.getPosition().concat(", ").concat(player.getTeamAbbr()).concat("\n");
+//        String time = player.getTimestamp();
+        String content = player.getBody().concat("\n\n").concat(player.getAnalysis());
 
         holder.name.setText(name);
-        holder.position.setText(position);
-        holder.team.setText(team);
-        holder.time.setText(time);
+        holder.info.setText(info);
+//        holder.time.setText(time);
         holder.content.setText(content);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
