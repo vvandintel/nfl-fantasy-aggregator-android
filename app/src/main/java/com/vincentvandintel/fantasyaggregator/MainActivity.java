@@ -1,6 +1,7 @@
 package com.vincentvandintel.fantasyaggregator;
 
-import android.content.Intent;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,13 +19,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.vincentvandintel.fantasyaggregator.activity.RankedLeadersActivity;
-import com.vincentvandintel.fantasyaggregator.adapter.LeadersAdapter;
+import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankingsAdapter;
+import com.vincentvandintel.fantasyaggregator.adapter.ScoringLeadersAdapter;
+import com.vincentvandintel.fantasyaggregator.fragment.PlayerNewsFragment;
+import com.vincentvandintel.fantasyaggregator.fragment.PlayerRankingsFragment;
+import com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment;
+import com.vincentvandintel.fantasyaggregator.model.RankedLeader;
 import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 import com.vincentvandintel.fantasyaggregator.request.RequestSingleton;
 import com.vincentvandintel.fantasyaggregator.util.Fantasy;
@@ -40,16 +46,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupView();
+        setupView(savedInstanceState);
     }
 
-    private void setupView() {
+    private void setupView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+        setupFantasyFragment(savedInstanceState);
+        if (findViewById(R.id.toolbar) == null) {
+            return;
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupNavigationDrawer(toolbar);
-        // Create spinner dropdown of leader positions
-        initializePositionSpinner();
+    }
+
+    private void setupFantasyFragment(Bundle savedInstanceState) {
+        if (findViewById(R.id.fantasy_fragment_container) == null || savedInstanceState != null) {
+            return;
+        }
+        ScoringLeadersFragment scoringLeadersFragment = new ScoringLeadersFragment();
+        scoringLeadersFragment.setArguments(getIntent().getExtras());
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.fantasy_fragment_container, scoringLeadersFragment)
+                .commitNow();
     }
 
     private void setupNavigationDrawer(Toolbar toolbar) {
@@ -78,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         navigationView.setNavigationItemSelectedListener(MainActivity.this);
     }
 
-    private void initializePositionSpinner() {
+    public void initializePositionSpinner() {
         Spinner spinner = (Spinner) findViewById(R.id.position_spinner);
         populateSpinner(spinner);
     }
@@ -92,13 +113,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @NonNull
-    private JsonObjectRequest initializeLeaders(final String position, String url) {
+    private JsonObjectRequest initializeLeaders( String url) {
+        Toast.makeText(this, "Requesting data", Toast.LENGTH_SHORT).show();
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            displayLeaders(response, position);
+                            Log.v("info", "Response is " + response.toString());
+                            displayLeaders(response);
                         } catch (JSONException e){
                             Log.e("Error", "Error: " + e.getMessage());
                         }
@@ -111,26 +134,56 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 });
     }
 
-    private void displayLeaders(JSONObject response, String position) throws JSONException {
+    private void displayLeaders(JSONObject response) throws JSONException {
         Fantasy fantasy = new Fantasy();
-        ArrayList<ScoringLeader> leaders = fantasy.formatLeaders(response, position);
-        Log.v("Leaders", "Leaders are: " + leaders);
-        LeadersAdapter leaderListAdapter = new LeadersAdapter(MainActivity.this, leaders);
-        ListView leadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
-        leadersListView.setAdapter(leaderListAdapter);
+        String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
+        if (fantasyDataType.isEmpty()) {
+            Log.e("Error", "Fantasy data type not set!");
+            return;
+        }
+
+        if (fantasyDataType.equals("scoringleaders")) {
+            String message = "Displaying scoring leaders...";
+            Log.v("Info", message);
+            displayScoringLeaders(response, fantasy);
+        } else if (fantasyDataType.equals("editorweekranks")) {
+            String message = "Displaying player rankings...";
+            Log.v("info", message);
+            displayPlayerRankings(response, fantasy);
+        }
     }
 
-    private void getLeaderData(String api, final String position, String dataType, int count) {
+    private void displayPlayerRankings(JSONObject response, Fantasy fantasy) throws JSONException {
+        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
+        ArrayList<RankedLeader> rankedLeaders = fantasy.formatRankedLeaders(response);
+        Log.v("Ranked Leaders", "Ranked Leaders are: " + rankedLeaders);
+        PlayerRankingsAdapter rankedLeadersListAdapter = new PlayerRankingsAdapter(MainActivity.this, rankedLeaders);
+        ListView rankedLeadersListView = (ListView) findViewById(R.id.ranked_leaders_list_view);
+        rankedLeadersListView.setAdapter(rankedLeadersListAdapter);
+    }
+
+    private void displayScoringLeaders(JSONObject response, Fantasy fantasy) throws JSONException {
+        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
+        ArrayList<ScoringLeader> scoringLeaders = fantasy.formatScoringLeaders(response, leaderPosition);
+        Log.v("Scoring Leaders", "Scoring Leaders are: " + scoringLeaders);
+        ScoringLeadersAdapter scoringLeaderListAdapter = new ScoringLeadersAdapter(MainActivity.this, scoringLeaders);
+        ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
+        scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
+    }
+
+    private void getLeaderData(String api, int count) {
+        String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
+        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
         String url = new StringBuilder(api)
                 .append("/players/")
-                .append(dataType)
+                .append(fantasyDataType)
                 .append("?format=json&sort=pts&count=")
                 .append(count)
                 .append("&position=")
-                .append(position)
+                .append(leaderPosition)
                 .toString();
 
-        JsonObjectRequest jsObjRequest = initializeLeaders(position, url);
+        JsonObjectRequest jsObjRequest = initializeLeaders(url);
         RequestSingleton.getInstance(this).addToRequestQueue(jsObjRequest);
     }
 
@@ -139,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String leaderPosition = parent.getItemAtPosition(pos).toString();
         // save leader position to private state
         getPreferences(MODE_PRIVATE).edit().putString("leaderPosition", leaderPosition).apply();
-
         final Button button = (Button) findViewById(R.id.get_leaders_button_id);
         button.setOnClickListener(this);
     }
@@ -148,12 +200,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
-    public void onClick(View v) {
+    @Override
+    public void onClick(View view) {
         // Code here executes on main thread after user presses button
         // send HTTP request to NFL API for scoring leaders
-        String api = getString(R.string.api);
-        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
-        getLeaderData(api, leaderPosition, "scoringleaders", 5);
+        String api = "http://api.fantasy.nfl.com/v1";
+        getLeaderData(api, 25);
     }
 
     @Override
@@ -185,18 +237,52 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         switch (menuItemId){
             case R.id.get_leaders_menu_item:
-                drawer.closeDrawers();
+                replaceWithScoringLeadersFragment();
                 break;
             case R.id.get_player_rankings_menu_item:
-                drawer.closeDrawers();
-                Intent intent = new Intent(MainActivity.this, RankedLeadersActivity.class);
-                startActivity(intent);
-                this.overridePendingTransition(0, 0);
+                replaceWithPlayerRankingsFragment();
+                break;
+            case R.id.get_player_news_menu_item:
+                replaceWithPlayerNewsFragment();
                 break;
 
         }
 
+        drawer.closeDrawers();
+
         return true;
+    }
+
+    private void replaceWithPlayerNewsFragment() {
+        Log.v("info", "Replacing current fragment with PlayerNewsFragment");
+        PlayerNewsFragment playerNewsFragment = new PlayerNewsFragment();
+        playerNewsFragment.setArguments(getIntent().getExtras());
+        replaceFantasyFragment(playerNewsFragment);
+    }
+
+    private void replaceWithPlayerRankingsFragment() {
+        Log.v("info", "Replacing current fragment with PlayerRankingsFragment");
+        PlayerRankingsFragment playerRankingsFragment = new PlayerRankingsFragment();
+        playerRankingsFragment.setArguments(getIntent().getExtras());
+        replaceFantasyFragment(playerRankingsFragment);
+    }
+
+    private void replaceWithScoringLeadersFragment() {
+        Log.v("info", "Replacing current fragment with ScoringLeadersFragment");
+        ScoringLeadersFragment scoringLeadersFragment = new ScoringLeadersFragment();
+        scoringLeadersFragment.setArguments(getIntent().getExtras());
+        replaceFantasyFragment(scoringLeadersFragment);
+    }
+
+    private void replaceFantasyFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .addToBackStack("previousLeadersFragment")
+                .replace(R.id.fantasy_fragment_container, fragment)
+                .commit();
+        //  Intent intent = new Intent(MainActivity.this, RankedLeadersActivity.class);
+        //   startActivity(intent);
+        //    this.overridePendingTransition(0, 0);
     }
 
     @Override

@@ -17,22 +17,24 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by vvand on 9/17/2017.
  */
 
-public class ScoringLeadersFragment extends Fragment {
+public class PlayerRankingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.scoring_leaders_fragment, container, false);
+        return inflater.inflate(R.layout.player_rankings_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
 
-        Log.v("info", "Starting up attached fragment ScoringLeadersFragment");
+        Log.v("info", "Starting up attached fragment PlayerRankingsFragment");
 
+        //((YourActivityClassName)getActivity()).yourPublicMethod();
+        // (MainActivity)getActivity().init
         MainActivity activity = (MainActivity) getActivity();
-        activity.getPreferences(MODE_PRIVATE).edit().putString("fantasyDataType", "scoringleaders").apply();
+        activity.getPreferences(MODE_PRIVATE).edit().putString("fantasyDataType", "editorweekranks").apply();
         activity.initializePositionSpinner();
     }
 
@@ -40,6 +42,6 @@ public class ScoringLeadersFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        Log.v("info", "Destroying fragment ScoringLeadersFragment");
+        Log.v("info", "Destroying fragment PlayerRankingsFragment");
     }
 }

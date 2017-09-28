@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/scoring_leader_name"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="2dp"
+        android:paddingEnd="1dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+
+    <TextView
+        android:id="@+id/scoring_leader_points"
+        android:textSize="15sp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+
+    <TextView
+        android:id="@+id/scoring_leader_stats"
+        android:textSize="15sp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+
+    <TextView
+        android:id="@+id/scoring_leader_game"
+        android:textSize="15sp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+
+</TableLayout>

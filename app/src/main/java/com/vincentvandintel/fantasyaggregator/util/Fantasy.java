@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.vincentvandintel.fantasyaggregator.model.RankedLeader;
 import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 
 import org.json.JSONException;
@@ -20,7 +21,7 @@ public class Fantasy {
     public Fantasy() {
     }
 
-    public ArrayList<ScoringLeader> formatLeaders(JSONObject response, String position) throws JSONException {
+    public ArrayList<ScoringLeader> formatScoringLeaders(JSONObject response, String position) throws JSONException {
         JSONObject positions = response.getJSONObject("positions");
         String positionLeaders = positions.getJSONArray(position).toString();
         Log.v("Position Leaders", "Position Leaders are " + positionLeaders);
@@ -28,10 +29,29 @@ public class Fantasy {
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<ScoringLeader>>(){}.getType();
 
-        ArrayList<ScoringLeader> leaders = new ArrayList<ScoringLeader>();
+        ArrayList<ScoringLeader> leaders = new ArrayList<>();
 
         try {
             leaders = gson.fromJson(positionLeaders, type);
+        } catch (Exception exception) {
+            Log.e("Error", exception.getMessage());
+        }
+
+        return leaders;
+    }
+
+    public ArrayList<RankedLeader> formatRankedLeaders(JSONObject response) throws JSONException {
+        //  String playerLeaders = players.getJSONArray(position).toString();
+        String players = response.getJSONArray("players").toString();
+        Log.v("info", "Player Leaders are " + players);
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<RankedLeader>>(){}.getType();
+
+        ArrayList<RankedLeader> leaders = new ArrayList<>();
+
+        try {
+            leaders = gson.fromJson(players, type);
         } catch (Exception exception) {
             Log.e("Error", exception.getMessage());
         }

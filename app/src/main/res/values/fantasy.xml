@@ -9,5 +9,8 @@
         <item>K</item>
         <item>DEF</item>
     </string-array>
-    <string name = "position_text">Select Position: </string>
+    <string name="position_text">Select Position: </string>
+    <string name="leaders_name_label">Name</string>
+    <string name="leaders_points_label">Points</string>
+    <string name="leaders_rank_label">Rank</string>
 </resources>
