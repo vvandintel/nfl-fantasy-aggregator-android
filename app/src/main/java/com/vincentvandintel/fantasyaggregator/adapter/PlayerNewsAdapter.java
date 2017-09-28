@@ -2,6 +2,8 @@ package com.vincentvandintel.fantasyaggregator.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,17 +39,17 @@ public class PlayerNewsAdapter extends RecyclerView.Adapter<PlayerNewsCardViewHo
     @Override
     public void onBindViewHolder(PlayerNewsCardViewHolder holder, int cardPosition) {
         Log.v("info", "Player news in onBindViewHolder is".concat(playerNewsItems.toString()));
-        Log.v("CardPosition", "Card position is ".concat(Integer.toString(cardPosition)));
         PlayerNewsItem player = playerNewsItems.get(cardPosition);
         String name = player.getFirstName().concat(" ").concat(player.getLastName());
-        String info = player.getPosition().concat(", ").concat(player.getTeamAbbr()).concat("\n");
+        String htmlEncodedInfo = player.getPosition().concat(", ").concat(player.getTeamAbbr()).concat("\n");
+        String htmlEncodedContent = player.getBody().concat("\n\n").concat(player.getAnalysis());
 //        String time = player.getTimestamp();
-        String content = player.getBody().concat("\n\n").concat(player.getAnalysis());
-
+        Spanned spannedContent = Html.fromHtml(htmlEncodedContent, Html.FROM_HTML_MODE_LEGACY);
+        Spanned spannedInfo = Html.fromHtml(htmlEncodedInfo, Html.FROM_HTML_MODE_LEGACY);
         holder.name.setText(name);
-        holder.info.setText(info);
+        holder.info.setText(spannedInfo);
 //        holder.time.setText(time);
-        holder.content.setText(content);
+        holder.content.setText(spannedContent);
     }
 
     @Override

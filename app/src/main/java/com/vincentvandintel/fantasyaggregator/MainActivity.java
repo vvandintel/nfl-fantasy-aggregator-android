@@ -13,6 +13,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -172,15 +173,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void displayPlayerNews(JSONObject response, Fantasy fantasy) throws JSONException {
-        ArrayList<PlayerNewsItem> playerNews = fantasy.formatPlayerNews(response);
+        final ArrayList<PlayerNewsItem> playerNews = fantasy.formatPlayerNews(response);
         Log.v("Player News", "Player news is: " + playerNews);
-        PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(MainActivity.this, playerNews);
+        final PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(MainActivity.this, playerNews);
         RecyclerView playerNewsRecyclerView = (RecyclerView) findViewById(R.id.player_news_recycler_view);
 
         RecyclerView.LayoutManager playerNewsLayoutManager = new LinearLayoutManager(MainActivity.this);
         playerNewsRecyclerView.setLayoutManager(playerNewsLayoutManager);
         playerNewsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         playerNewsRecyclerView.setAdapter(playerNewsAdapter);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                playerNews.remove(viewHolder.getAdapterPosition());
+                playerNewsAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            }
+
+            @Override
+            public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
+                super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(playerNewsRecyclerView);
     }
 
     private void displayScoringLeaders(JSONObject response, Fantasy fantasy) throws JSONException {
