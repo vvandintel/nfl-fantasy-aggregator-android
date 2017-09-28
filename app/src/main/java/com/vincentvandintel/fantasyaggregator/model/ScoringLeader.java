@@ -37,12 +37,4 @@ public class ScoringLeader extends Leader {
     public void setProjectedPts(String projectedPts) {
         this.projectedPts = projectedPts;
     }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
 }

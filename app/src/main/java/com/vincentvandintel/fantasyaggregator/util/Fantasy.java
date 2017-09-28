@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.vincentvandintel.fantasyaggregator.model.PlayerNewsItem;
 import com.vincentvandintel.fantasyaggregator.model.RankedLeader;
 import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 
@@ -57,5 +58,24 @@ public class Fantasy {
         }
 
         return leaders;
+    }
+
+    public ArrayList<PlayerNewsItem> formatPlayerNews(JSONObject response) throws JSONException {
+        //  String playerLeaders = players.getJSONArray(position).toString();
+        String playerNews = response.getJSONArray("news").toString();
+        Log.v("info", "Player news is " + playerNews);
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<PlayerNewsItem>>(){}.getType();
+
+        ArrayList<PlayerNewsItem> players = new ArrayList<>();
+
+        try {
+            players = gson.fromJson(playerNews, type);
+        } catch (Exception exception) {
+            Log.e("Error", exception.getMessage());
+        }
+
+        return players;
     }
 }

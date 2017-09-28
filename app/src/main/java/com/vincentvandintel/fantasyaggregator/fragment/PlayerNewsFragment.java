@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vincentvandintel.fantasyaggregator.MainActivity;
 import com.vincentvandintel.fantasyaggregator.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by vvand on 9/25/2017.
@@ -19,6 +22,18 @@ public class PlayerNewsFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.player_news_fragment, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle bundle) {
+        super.onActivityCreated(bundle);
+
+        Log.v("info", "Starting up attached fragment PlayerRankingsFragment");
+        MainActivity activity = (MainActivity) getActivity();
+        activity.getPreferences(MODE_PRIVATE).edit().putString("fantasyDataType", "news").apply();
+       // String api = activity.getResources().getString(R.string.api);
+        String api = "http://api.fantasy.nfl.com/v1";
+        activity.getFantasyData(api, 25);
     }
 
     @Override
