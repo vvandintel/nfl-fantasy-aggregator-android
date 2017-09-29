@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void displayPlayerNews(JSONObject response, Fantasy fantasy) throws JSONException {
         final ArrayList<PlayerNewsItem> playerNews = fantasy.formatPlayerNews(response);
         Log.v("Player News", "Player news is: " + playerNews);
-        final PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(MainActivity.this, playerNews);
+        final PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(playerNews);
         RecyclerView playerNewsRecyclerView = (RecyclerView) findViewById(R.id.player_news_recycler_view);
 
         RecyclerView.LayoutManager playerNewsLayoutManager = new LinearLayoutManager(MainActivity.this);
