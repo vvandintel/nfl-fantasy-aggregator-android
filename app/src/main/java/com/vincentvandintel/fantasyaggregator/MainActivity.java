@@ -119,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @NonNull
-    private JsonObjectRequest initializeLeaders( String url) {
+    private JsonObjectRequest initializeLeaders(String url) {
+        Log.v("info", "Requesting data from ".concat(url));
         Toast.makeText(this, "Requesting data", Toast.LENGTH_SHORT).show();
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -164,12 +165,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void displayPlayerRankings(JSONObject response, Fantasy fantasy) throws JSONException {
-        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
         ArrayList<RankedLeader> rankedLeaders = fantasy.formatRankedLeaders(response);
         Log.v("Ranked Leaders", "Ranked Leaders are: " + rankedLeaders);
         PlayerRankingsAdapter rankedLeadersListAdapter = new PlayerRankingsAdapter(MainActivity.this, rankedLeaders);
         ListView rankedLeadersListView = (ListView) findViewById(R.id.ranked_leaders_list_view);
         rankedLeadersListView.setAdapter(rankedLeadersListAdapter);
+    }
+
+    private void displayScoringLeaders(JSONObject response, Fantasy fantasy) throws JSONException {
+        String fantasyPosition = getPreferences(MODE_PRIVATE).getString("fantasyPosition","");
+        ArrayList<ScoringLeader> scoringLeaders = fantasy.formatScoringLeaders(response, fantasyPosition);
+        Log.v("Scoring Leaders", "Scoring Leaders are: " + scoringLeaders);
+        ScoringLeadersAdapter scoringLeaderListAdapter = new ScoringLeadersAdapter(MainActivity.this, scoringLeaders);
+        ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
+        scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
     }
 
     private void displayPlayerNews(JSONObject response, Fantasy fantasy) throws JSONException {
@@ -206,15 +215,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         itemTouchHelper.attachToRecyclerView(playerNewsRecyclerView);
     }
 
-    private void displayScoringLeaders(JSONObject response, Fantasy fantasy) throws JSONException {
-        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
-        ArrayList<ScoringLeader> scoringLeaders = fantasy.formatScoringLeaders(response, leaderPosition);
-        Log.v("Scoring Leaders", "Scoring Leaders are: " + scoringLeaders);
-        ScoringLeadersAdapter scoringLeaderListAdapter = new ScoringLeadersAdapter(MainActivity.this, scoringLeaders);
-        ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
-        scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
-    }
-
     public void getFantasyData(String api, int count) {
         String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
         String fantasyPosition = getPreferences(MODE_PRIVATE).getString("fantasyPosition","");
@@ -233,9 +233,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        String leaderPosition = parent.getItemAtPosition(pos).toString();
+        String fantasyPosition = parent.getItemAtPosition(pos).toString();
         // save leader position to private state
-        getPreferences(MODE_PRIVATE).edit().putString("leaderPosition", leaderPosition).apply();
+        getPreferences(MODE_PRIVATE).edit().putString("fantasyPosition", fantasyPosition).apply();
         final Button button = (Button) findViewById(R.id.get_leaders_button_id);
         button.setOnClickListener(this);
     }
@@ -247,9 +247,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onClick(View view) {
         // Code here executes on main thread after user presses button
-        // send HTTP request to NFL API for scoring leaders
-        // String api = getResources().getString(R.string.api);
-        String api = "http://api.fantasy.nfl.com/v1";
+        // send HTTP request to NFL API for leaders leaders
+        String api = getResources().getString(R.string.api);
         getFantasyData(api, 25);
     }
 

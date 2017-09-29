@@ -5,15 +5,6 @@ package com.vincentvandintel.fantasyaggregator.model;
  */
 
 public class ScoringLeader extends Leader {
-    private String statsLine;
-    private String pts;
-    private String projectedPts;
-    private String playerId;
-
-    public ScoringLeader() {
-        super();
-    }
-
     public String getStatsLine() {
         return statsLine;
     }
@@ -36,5 +27,12 @@ public class ScoringLeader extends Leader {
 
     public void setProjectedPts(String projectedPts) {
         this.projectedPts = projectedPts;
+    }
+
+    private String statsLine;
+    private String pts;
+    private String projectedPts;
+
+    public ScoringLeader() {
     }
 }

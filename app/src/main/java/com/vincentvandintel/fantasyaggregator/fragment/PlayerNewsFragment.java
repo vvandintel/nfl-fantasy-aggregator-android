@@ -32,7 +32,6 @@ public class PlayerNewsFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         activity.getPreferences(MODE_PRIVATE).edit().putString("fantasyDataType", "news").apply();
         String api = activity.getResources().getString(R.string.api);
-      //  String api = "http://api.fantasy.nfl.com/v1";
         activity.getFantasyData(api, 25);
     }
 
