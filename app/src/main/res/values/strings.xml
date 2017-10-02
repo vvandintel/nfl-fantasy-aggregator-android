@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">NFL Fantasy Aggregator</string>
     <string name="action_settings">Settings</string>
-    <string name="get_scoring_leaders_text">Get Scoring Leaders</string>
-    <string name="get_ranked_leaders_text">Get Player Rankings</string>
-    <string name="get_player_news_text">Get Player News</string>
+    <string name="get_scoring_leaders_text">Scoring Leaders</string>
+    <string name="get_ranked_leaders_text">Player Rankings</string>
+    <string name="get_player_news_text">Player News</string>
     <string name="get_scoring_leaders_button_text">Submit</string>
     <string name="greeting">Welcome to the NFL Fantasy Aggregator!</string>
     <string name="get_scoring_leaders_menu_item_title">Scoring Leaders</string>

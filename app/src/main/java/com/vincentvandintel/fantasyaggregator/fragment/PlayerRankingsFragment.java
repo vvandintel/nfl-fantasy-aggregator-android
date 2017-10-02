@@ -30,9 +30,6 @@ public class PlayerRankingsFragment extends Fragment {
         super.onActivityCreated(bundle);
 
         Log.v("info", "Starting up attached fragment PlayerRankingsFragment");
-
-        //((YourActivityClassName)getActivity()).yourPublicMethod();
-        // (MainActivity)getActivity().init
         MainActivity activity = (MainActivity) getActivity();
         activity.getPreferences(MODE_PRIVATE).edit().putString("fantasyDataType", "editorweekranks").apply();
         activity.initializePositionSpinner();

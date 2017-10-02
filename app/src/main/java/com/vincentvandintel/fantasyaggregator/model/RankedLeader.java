@@ -8,4 +8,14 @@ public class RankedLeader extends Leader {
     public RankedLeader() {
         super();
     }
+
+    public Float getRank() {
+        return rank;
+    }
+
+    public void setRank(Float rank) {
+        this.rank = rank;
+    }
+
+    private Float rank;
 }

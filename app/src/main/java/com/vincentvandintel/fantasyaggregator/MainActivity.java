@@ -9,7 +9,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +29,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.vincentvandintel.fantasyaggregator.adapter.PlayerNewsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankingsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.ScoringLeadersAdapter;
 import com.vincentvandintel.fantasyaggregator.fragment.PlayerNewsFragment;
 import com.vincentvandintel.fantasyaggregator.fragment.PlayerRankingsFragment;
 import com.vincentvandintel.fantasyaggregator.fragment.ScoringLeadersFragment;
+import com.vincentvandintel.fantasyaggregator.model.PlayerNewsItem;
 import com.vincentvandintel.fantasyaggregator.model.RankedLeader;
 import com.vincentvandintel.fantasyaggregator.model.ScoringLeader;
 import com.vincentvandintel.fantasyaggregator.request.RequestSingleton;
@@ -113,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @NonNull
-    private JsonObjectRequest initializeLeaders( String url) {
+    private JsonObjectRequest initializeLeaders(String url) {
+        Log.v("info", "Requesting data from ".concat(url));
         Toast.makeText(this, "Requesting data", Toast.LENGTH_SHORT).show();
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -121,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     public void onResponse(JSONObject response) {
                         try {
                             Log.v("info", "Response is " + response.toString());
-                            displayLeaders(response);
+                            displayFantasyData(response);
                         } catch (JSONException e){
                             Log.e("Error", "Error: " + e.getMessage());
                         }
@@ -134,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 });
     }
 
-    private void displayLeaders(JSONObject response) throws JSONException {
+    private void displayFantasyData(JSONObject response) throws JSONException {
         Fantasy fantasy = new Fantasy();
         String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
         if (fantasyDataType.isEmpty()) {
@@ -150,11 +157,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String message = "Displaying player rankings...";
             Log.v("info", message);
             displayPlayerRankings(response, fantasy);
+        } else if (fantasyDataType.equals("news")) {
+            String message = "Displaying player news...";
+            Log.v("info", message);
+            displayPlayerNews(response, fantasy);
         }
     }
 
     private void displayPlayerRankings(JSONObject response, Fantasy fantasy) throws JSONException {
-        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
         ArrayList<RankedLeader> rankedLeaders = fantasy.formatRankedLeaders(response);
         Log.v("Ranked Leaders", "Ranked Leaders are: " + rankedLeaders);
         PlayerRankingsAdapter rankedLeadersListAdapter = new PlayerRankingsAdapter(MainActivity.this, rankedLeaders);
@@ -163,24 +173,58 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void displayScoringLeaders(JSONObject response, Fantasy fantasy) throws JSONException {
-        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
-        ArrayList<ScoringLeader> scoringLeaders = fantasy.formatScoringLeaders(response, leaderPosition);
+        String fantasyPosition = getPreferences(MODE_PRIVATE).getString("fantasyPosition","");
+        ArrayList<ScoringLeader> scoringLeaders = fantasy.formatScoringLeaders(response, fantasyPosition);
         Log.v("Scoring Leaders", "Scoring Leaders are: " + scoringLeaders);
         ScoringLeadersAdapter scoringLeaderListAdapter = new ScoringLeadersAdapter(MainActivity.this, scoringLeaders);
         ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
         scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
     }
 
-    private void getLeaderData(String api, int count) {
+    private void displayPlayerNews(JSONObject response, Fantasy fantasy) throws JSONException {
+        final ArrayList<PlayerNewsItem> playerNews = fantasy.formatPlayerNews(response);
+        Log.v("Player News", "Player news is: " + playerNews);
+        final PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(playerNews);
+        RecyclerView playerNewsRecyclerView = (RecyclerView) findViewById(R.id.player_news_recycler_view);
+
+        RecyclerView.LayoutManager playerNewsLayoutManager = new LinearLayoutManager(MainActivity.this);
+        playerNewsRecyclerView.setLayoutManager(playerNewsLayoutManager);
+        playerNewsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        playerNewsRecyclerView.setAdapter(playerNewsAdapter);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                playerNews.remove(viewHolder.getAdapterPosition());
+                playerNewsAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            }
+
+            @Override
+            public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
+                super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(playerNewsRecyclerView);
+    }
+
+    public void getFantasyData(String api, int count) {
         String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
-        String leaderPosition = getPreferences(MODE_PRIVATE).getString("leaderPosition","");
+        String fantasyPosition = getPreferences(MODE_PRIVATE).getString("fantasyPosition","");
         String url = new StringBuilder(api)
                 .append("/players/")
                 .append(fantasyDataType)
                 .append("?format=json&sort=pts&count=")
                 .append(count)
                 .append("&position=")
-                .append(leaderPosition)
+                .append(fantasyPosition)
                 .toString();
 
         JsonObjectRequest jsObjRequest = initializeLeaders(url);
@@ -189,9 +233,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        String leaderPosition = parent.getItemAtPosition(pos).toString();
+        String fantasyPosition = parent.getItemAtPosition(pos).toString();
         // save leader position to private state
-        getPreferences(MODE_PRIVATE).edit().putString("leaderPosition", leaderPosition).apply();
+        getPreferences(MODE_PRIVATE).edit().putString("fantasyPosition", fantasyPosition).apply();
         final Button button = (Button) findViewById(R.id.get_leaders_button_id);
         button.setOnClickListener(this);
     }
@@ -203,9 +247,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onClick(View view) {
         // Code here executes on main thread after user presses button
-        // send HTTP request to NFL API for scoring leaders
-        String api = "http://api.fantasy.nfl.com/v1";
-        getLeaderData(api, 25);
+        // send HTTP request to NFL API for leaders leaders
+        String api = getResources().getString(R.string.api);
+        getFantasyData(api, 25);
     }
 
     @Override

@@ -10,7 +10,6 @@ public abstract class Leader {
     private String teamAbbr;
     private String opponentTeamAbbr;
     private String position;
-    private Float rank;
 
     public String getFirstName() {
         return firstName;
@@ -50,13 +49,5 @@ public abstract class Leader {
 
     public void setPosition(String position) {
         this.position = position;
-    }
-
-    public Float getRank() {
-        return rank;
-    }
-
-    public void setRank(Float rank) {
-        this.rank = rank;
     }
 }
