@@ -11,4 +11,6 @@
     <string name="get_player_news_menu_item_title">Player News</string>
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
+    <string name="default_notification_channel_id">fantasy_aggregator_channel</string>
+
 </resources>
