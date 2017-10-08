@@ -30,12 +30,25 @@ public class PlayerRankingsAdapter extends ArrayAdapter<RankedLeader> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.player_rankings_list, parent, false);
         }
         // Lookup view for data population
-        TextView name = (TextView) convertView.findViewById(R.id.name);
-        TextView rank = (TextView) convertView.findViewById(R.id.rank);
+        TextView title = (TextView) convertView.findViewById(R.id.title);
+//        TextView rank = (TextView) convertView.findViewById(R.id.rank);
+        TextView game = (TextView) convertView.findViewById(R.id.game);
+
         // Populate the data into the template view using the data object
-        String nameText = new StringBuilder(rankedLeader.getFirstName()).append(" ").append(rankedLeader.getLastName()).toString();
-        name.setText(nameText);
-        rank.setText(rankedLeader.getRank().toString());
+        String titleText = rankedLeader.getRank().toString()
+                .concat(" - ")
+                .concat(rankedLeader.getFirstName())
+                .concat(" ")
+                .concat(rankedLeader.getLastName());
+
+        String gameText = "Game: "
+                .concat(rankedLeader.getTeamAbbr())
+                .concat(" versus ")
+                .concat(rankedLeader.getOpponentTeamAbbr());;
+
+        title.setText(titleText);
+        // rank.setText(rankedLeader.getRank().toString());
+        game.setText(gameText);
 
         // Return the completed view to render on screen
         return convertView;

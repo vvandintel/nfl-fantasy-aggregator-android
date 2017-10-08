@@ -3,22 +3,46 @@
     android:layout_width="fill_parent"
     android:layout_height="match_parent">
 
-    <TableRow>
+        <!--<TextView-->
+            <!--android:id="@+id/rank"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textSize="18sp"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingStart="2dp"-->
+            <!--android:paddingEnd="1dp"-->
+            <!--android:paddingTop="5dp"-->
+            <!--android:paddingBottom="5dp" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/name"-->
+            <!--android:textSize="15sp"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingStart="2dp"-->
+            <!--android:paddingEnd="2dp"-->
+            <!--android:paddingTop="5dp"-->
+            <!--android:paddingBottom="5dp" />-->
 
         <TextView
-            android:id="@+id/rank"
-            android:layout_width="wrap_content"
+            android:id="@+id/title"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingStart="2dp"
-            android:paddingEnd="1dp" />
+            android:paddingEnd="1dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:id="@+id/game"
+            android:textSize="15sp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingStart="2dp"
-            android:paddingEnd="2dp" />
+            android:paddingEnd="2dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
 
-    </TableRow>
-    
 </TableLayout>
