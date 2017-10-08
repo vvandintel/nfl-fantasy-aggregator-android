@@ -1,0 +1,28 @@
+{
+  "project_info": {
+    "project_number": "1093718748103",
+    "project_id": "default-demo-app-a3e36"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093718748103:android:3b31e8bcd588a482",
+        "android_client_info": {
+          "package_name": "com.vincentvandintel.fantasyaggregator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093718748103-f49kcbnn12stnoepughlm0iuh6vto0kk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAToY1ZGcKxyN3O9Mt8QO1v6gA8KKHxwEY"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

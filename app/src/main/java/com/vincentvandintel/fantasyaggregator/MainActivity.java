@@ -29,6 +29,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerNewsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankingsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.ScoringLeadersAdapter;
@@ -53,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupView(savedInstanceState);
+    }
+
+    @Override
+    protected  void onStart() {
+        super.onStart();
+        FirebaseMessaging.getInstance().subscribeToTopic("pushNotifications");
     }
 
     private void setupView(Bundle savedInstanceState) {
