@@ -26,13 +26,15 @@ public class FantasyMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage message) {
         Log.v("Firebase Message", "Message received!");
 
-        String notificationTitle = null, notificationBody = null;
-
         if (message.getNotification() != null) {
-            Log.d("MessageService", "Notification: " + message.getNotification().getBody());
-            notificationTitle = message.getNotification().getTitle();
-            notificationBody = message.getNotification().getBody();
+            setNotification(message);
         }
+    }
+
+    private void setNotification(RemoteMessage message) {
+        Log.d("MessageService", "Notification: " + message.getNotification().getBody());
+        String notificationTitle = message.getNotification().getTitle();
+        String notificationBody = message.getNotification().getBody();
 
         sendNotification(notificationTitle, notificationBody);
     }
@@ -43,18 +45,7 @@ public class FantasyMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), getString(R.string.default_notification_channel_id))
-//                .setAutoCancel(true)
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .setContentIntent(pendingIntent)
-//                .setContentTitle(notificationTitle)
-//                .setContentText(notificationBody)
-//                .setChannelId(getString(R.string.default_notification_channel_id));
-
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-//        notificationManager.notify(0, notificationBuilder.build());
-
         String channelId = getString(R.string.default_notification_channel_id);
         createChannel(notificationManager, channelId);
 

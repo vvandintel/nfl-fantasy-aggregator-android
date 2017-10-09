@@ -132,21 +132,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toast.makeText(this, "Requesting data", Toast.LENGTH_SHORT).show();
         String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
 
-        switch (fantasyDataType) {
-            case "scoringleaders":
-                try {
-                    Log.v("Shimmer", "Starting ScoringLeaders shimmer");
-                    startShimmer(R.id.scoring_leader_shimmer_view_container);
-                } catch (Exception exception) {
-                    Log.e("ShimmerError", "Issue starting scoring leader shimmer:".concat(exception.toString()));
-                }
-                break;
-            case "editorweekranks":
-                break;
-            case "news":
-                break;
-        }
-
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -187,20 +172,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             default:
                 break;
         }
-
-//        if (fantasyDataType.equals("scoringleaders")) {
-//            String message = "Displaying scoring leaders...";
-//            Log.v("Info", message);
-//            displayScoringLeaders(response, fantasy);
-//        } else if (fantasyDataType.equals("editorweekranks")) {
-//            String message = "Displaying player rankings...";
-//            Log.v("info", message);
-//            displayPlayerRankings(response, fantasy);
-//        } else if (fantasyDataType.equals("news")) {
-//            String message = "Displaying player news...";
-//            Log.v("info", message);
-//            displayPlayerNews(response, fantasy);
-//        }
     }
 
     private void startShimmer(int viewId) {
@@ -234,15 +205,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
         scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
 
-//        try {
-//            startShimmer(R.id.scoring_leader_shimmer_view_container);
-//        } catch (Exception exception) {
-//            Log.e("ShimmerError", "Issue starting scoring leader shimmer:".concat(exception.toString()));
-//        } finally {
-//            ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
-//            scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
-//        }
-//
         try {
             stopShimmer(R.id.scoring_leader_shimmer_view_container);
         } catch (Exception exception) {
@@ -297,6 +259,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .append(fantasyPosition)
                 .toString();
 
+        switch (fantasyDataType) {
+            case "scoringleaders":
+                try {
+                    Log.v("Shimmer", "Starting ScoringLeaders shimmer");
+                    startShimmer(R.id.scoring_leader_shimmer_view_container);
+                } catch (Exception exception) {
+                    Log.e("ShimmerError", "Issue starting scoring leader shimmer:".concat(exception.toString()));
+                }
+                break;
+            case "editorweekranks":
+                break;
+            case "news":
+                break;
+        }
+
         JsonObjectRequest jsObjRequest = initializeLeaders(url);
         RequestSingleton.getInstance(this).addToRequestQueue(jsObjRequest);
     }
@@ -304,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         String fantasyPosition = parent.getItemAtPosition(pos).toString();
-        // save leader position to private state
         getPreferences(MODE_PRIVATE).edit().putString("fantasyPosition", fantasyPosition).apply();
         final Button button = (Button) findViewById(R.id.get_leaders_button_id);
         button.setOnClickListener(this);
@@ -324,23 +300,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_navigation, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -394,9 +359,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .addToBackStack("previousLeadersFragment")
                 .replace(R.id.fantasy_fragment_container, fragment)
                 .commit();
-        //  Intent intent = new Intent(MainActivity.this, RankedLeadersActivity.class);
-        //   startActivity(intent);
-        //    this.overridePendingTransition(0, 0);
     }
 
     @Override
