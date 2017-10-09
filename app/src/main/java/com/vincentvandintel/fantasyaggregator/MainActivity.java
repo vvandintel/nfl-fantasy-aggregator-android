@@ -29,6 +29,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerNewsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankingsAdapter;
@@ -129,6 +130,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private JsonObjectRequest initializeLeaders(String url) {
         Log.v("info", "Requesting data from ".concat(url));
         Toast.makeText(this, "Requesting data", Toast.LENGTH_SHORT).show();
+        String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
+
+        switch (fantasyDataType) {
+            case "scoringleaders":
+                try {
+                    Log.v("Shimmer", "Starting ScoringLeaders shimmer");
+                    startShimmer(R.id.scoring_leader_shimmer_view_container);
+                } catch (Exception exception) {
+                    Log.e("ShimmerError", "Issue starting scoring leader shimmer:".concat(exception.toString()));
+                }
+                break;
+            case "editorweekranks":
+                break;
+            case "news":
+                break;
+        }
+
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -156,22 +174,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
 
-        if (fantasyDataType.equals("scoringleaders")) {
-            String message = "Displaying scoring leaders...";
-            Log.v("Info", message);
-            displayScoringLeaders(response, fantasy);
-        } else if (fantasyDataType.equals("editorweekranks")) {
-            String message = "Displaying player rankings...";
-            Log.v("info", message);
-            displayPlayerRankings(response, fantasy);
-        } else if (fantasyDataType.equals("news")) {
-            String message = "Displaying player news...";
-            Log.v("info", message);
-            displayPlayerNews(response, fantasy);
+        switch (fantasyDataType) {
+            case "scoringleaders":
+                displayScoringLeaders(response, fantasy);
+                break;
+            case "editorweekranks":
+                displayPlayerRankings(response, fantasy);
+                break;
+            case "news":
+                displayPlayerNews(response, fantasy);
+                break;
+            default:
+                break;
         }
+
+//        if (fantasyDataType.equals("scoringleaders")) {
+//            String message = "Displaying scoring leaders...";
+//            Log.v("Info", message);
+//            displayScoringLeaders(response, fantasy);
+//        } else if (fantasyDataType.equals("editorweekranks")) {
+//            String message = "Displaying player rankings...";
+//            Log.v("info", message);
+//            displayPlayerRankings(response, fantasy);
+//        } else if (fantasyDataType.equals("news")) {
+//            String message = "Displaying player news...";
+//            Log.v("info", message);
+//            displayPlayerNews(response, fantasy);
+//        }
+    }
+
+    private void startShimmer(int viewId) {
+        ShimmerFrameLayout shimmerContainer =
+                (ShimmerFrameLayout) findViewById(viewId);
+        shimmerContainer.startShimmerAnimation();
+    }
+
+    private void stopShimmer(int viewId) {
+        ShimmerFrameLayout shimmerContainer =
+                (ShimmerFrameLayout) findViewById(viewId);
+        shimmerContainer.stopShimmerAnimation();
     }
 
     private void displayPlayerRankings(JSONObject response, Fantasy fantasy) throws JSONException {
+        Log.v("info", "Displaying player rankings...");
         ArrayList<RankedLeader> rankedLeaders = fantasy.formatRankedLeaders(response);
         Log.v("Ranked Leaders", "Ranked Leaders are: " + rankedLeaders);
         PlayerRankingsAdapter rankedLeadersListAdapter = new PlayerRankingsAdapter(MainActivity.this, rankedLeaders);
@@ -180,15 +225,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void displayScoringLeaders(JSONObject response, Fantasy fantasy) throws JSONException {
+        Log.v("Info", "Displaying scoring leaders...");
         String fantasyPosition = getPreferences(MODE_PRIVATE).getString("fantasyPosition","");
         ArrayList<ScoringLeader> scoringLeaders = fantasy.formatScoringLeaders(response, fantasyPosition);
         Log.v("Scoring Leaders", "Scoring Leaders are: " + scoringLeaders);
         ScoringLeadersAdapter scoringLeaderListAdapter = new ScoringLeadersAdapter(MainActivity.this, scoringLeaders);
+
         ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
         scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
+
+//        try {
+//            startShimmer(R.id.scoring_leader_shimmer_view_container);
+//        } catch (Exception exception) {
+//            Log.e("ShimmerError", "Issue starting scoring leader shimmer:".concat(exception.toString()));
+//        } finally {
+//            ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
+//            scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
+//        }
+//
+        try {
+            stopShimmer(R.id.scoring_leader_shimmer_view_container);
+        } catch (Exception exception) {
+            Log.e("ShimmerError", "Issue stopping scoring leader shimmer:".concat(exception.toString()));
+        }
     }
 
     private void displayPlayerNews(JSONObject response, Fantasy fantasy) throws JSONException {
+        Log.v("info", "Displaying player news...");
         final ArrayList<PlayerNewsItem> playerNews = fantasy.formatPlayerNews(response);
         Log.v("Player News", "Player news is: " + playerNews);
         final PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(playerNews);
