@@ -37,7 +37,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        shimmer:duration="100" >
+        shimmer:duration="1000" >
 
         <include layout="@layout/get_leaders"
             android:layout_width="fill_parent"
