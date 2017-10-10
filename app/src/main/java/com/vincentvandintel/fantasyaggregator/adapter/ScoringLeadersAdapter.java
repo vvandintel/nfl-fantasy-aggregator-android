@@ -29,6 +29,8 @@ public class ScoringLeadersAdapter extends ArrayAdapter<ScoringLeader> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.scoring_leaders_list, parent, false);
         }
+
+
         // Lookup view for data population
         TextView title = (TextView) convertView.findViewById(R.id.scoring_leader_name);
         TextView points = (TextView) convertView.findViewById(R.id.scoring_leader_points);

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "68509842940",
+    "firebase_url": "https://fantasy-aggregator.firebaseio.com",
+    "project_id": "fantasy-aggregator",
+    "storage_bucket": "fantasy-aggregator.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68509842940:android:3b31e8bcd588a482",
+        "android_client_info": {
+          "package_name": "com.vincentvandintel.fantasyaggregator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68509842940-j1t7g530hijgjeakb6f6o0dr5qhs6hj8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtDlteAvXoh9qxG66GHMYGFkAj8U5OTP0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

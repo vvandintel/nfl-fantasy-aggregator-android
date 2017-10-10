@@ -29,6 +29,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerNewsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.PlayerRankingsAdapter;
 import com.vincentvandintel.fantasyaggregator.adapter.ScoringLeadersAdapter;
@@ -53,6 +55,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupView(savedInstanceState);
+    }
+
+    @Override
+    protected  void onStart() {
+        super.onStart();
+        FirebaseMessaging.getInstance().subscribeToTopic("pushNotifications");
     }
 
     private void setupView(Bundle savedInstanceState) {
@@ -122,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private JsonObjectRequest initializeLeaders(String url) {
         Log.v("info", "Requesting data from ".concat(url));
         Toast.makeText(this, "Requesting data", Toast.LENGTH_SHORT).show();
+        String fantasyDataType = getPreferences(MODE_PRIVATE).getString("fantasyDataType", "");
+
         return new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -149,22 +159,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
 
-        if (fantasyDataType.equals("scoringleaders")) {
-            String message = "Displaying scoring leaders...";
-            Log.v("Info", message);
-            displayScoringLeaders(response, fantasy);
-        } else if (fantasyDataType.equals("editorweekranks")) {
-            String message = "Displaying player rankings...";
-            Log.v("info", message);
-            displayPlayerRankings(response, fantasy);
-        } else if (fantasyDataType.equals("news")) {
-            String message = "Displaying player news...";
-            Log.v("info", message);
-            displayPlayerNews(response, fantasy);
+        switch (fantasyDataType) {
+            case "scoringleaders":
+                displayScoringLeaders(response, fantasy);
+                break;
+            case "editorweekranks":
+                displayPlayerRankings(response, fantasy);
+                break;
+            case "news":
+                displayPlayerNews(response, fantasy);
+                break;
+            default:
+                break;
         }
     }
 
+    private void startShimmer(int viewId) {
+        ShimmerFrameLayout shimmerContainer =
+                (ShimmerFrameLayout) findViewById(viewId);
+        shimmerContainer.startShimmerAnimation();
+    }
+
+    private void stopShimmer(int viewId) {
+        ShimmerFrameLayout shimmerContainer =
+                (ShimmerFrameLayout) findViewById(viewId);
+        shimmerContainer.stopShimmerAnimation();
+    }
+
     private void displayPlayerRankings(JSONObject response, Fantasy fantasy) throws JSONException {
+        Log.v("info", "Displaying player rankings...");
         ArrayList<RankedLeader> rankedLeaders = fantasy.formatRankedLeaders(response);
         Log.v("Ranked Leaders", "Ranked Leaders are: " + rankedLeaders);
         PlayerRankingsAdapter rankedLeadersListAdapter = new PlayerRankingsAdapter(MainActivity.this, rankedLeaders);
@@ -173,15 +196,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void displayScoringLeaders(JSONObject response, Fantasy fantasy) throws JSONException {
+        Log.v("Info", "Displaying scoring leaders...");
         String fantasyPosition = getPreferences(MODE_PRIVATE).getString("fantasyPosition","");
         ArrayList<ScoringLeader> scoringLeaders = fantasy.formatScoringLeaders(response, fantasyPosition);
         Log.v("Scoring Leaders", "Scoring Leaders are: " + scoringLeaders);
         ScoringLeadersAdapter scoringLeaderListAdapter = new ScoringLeadersAdapter(MainActivity.this, scoringLeaders);
+
         ListView scoringLeadersListView = (ListView) findViewById(R.id.scoring_leaders_list_view);
         scoringLeadersListView.setAdapter(scoringLeaderListAdapter);
+
+        try {
+            stopShimmer(R.id.scoring_leader_shimmer_view_container);
+        } catch (Exception exception) {
+            Log.e("ShimmerError", "Issue stopping scoring leader shimmer:".concat(exception.toString()));
+        }
     }
 
     private void displayPlayerNews(JSONObject response, Fantasy fantasy) throws JSONException {
+        Log.v("info", "Displaying player news...");
         final ArrayList<PlayerNewsItem> playerNews = fantasy.formatPlayerNews(response);
         Log.v("Player News", "Player news is: " + playerNews);
         final PlayerNewsAdapter playerNewsAdapter = new PlayerNewsAdapter(playerNews);
@@ -227,6 +259,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .append(fantasyPosition)
                 .toString();
 
+        switch (fantasyDataType) {
+            case "scoringleaders":
+                try {
+                    Log.v("Shimmer", "Starting ScoringLeaders shimmer");
+                    startShimmer(R.id.scoring_leader_shimmer_view_container);
+                } catch (Exception exception) {
+                    Log.e("ShimmerError", "Issue starting scoring leader shimmer:".concat(exception.toString()));
+                }
+                break;
+            case "editorweekranks":
+                break;
+            case "news":
+                break;
+        }
+
         JsonObjectRequest jsObjRequest = initializeLeaders(url);
         RequestSingleton.getInstance(this).addToRequestQueue(jsObjRequest);
     }
@@ -234,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         String fantasyPosition = parent.getItemAtPosition(pos).toString();
-        // save leader position to private state
         getPreferences(MODE_PRIVATE).edit().putString("fantasyPosition", fantasyPosition).apply();
         final Button button = (Button) findViewById(R.id.get_leaders_button_id);
         button.setOnClickListener(this);
@@ -254,23 +300,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_navigation, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -324,9 +359,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .addToBackStack("previousLeadersFragment")
                 .replace(R.id.fantasy_fragment_container, fragment)
                 .commit();
-        //  Intent intent = new Intent(MainActivity.this, RankedLeadersActivity.class);
-        //   startActivity(intent);
-        //    this.overridePendingTransition(0, 0);
     }
 
     @Override
