@@ -50,7 +50,8 @@ public class FantasyMessagingService extends FirebaseMessagingService {
     private NotificationCompat.Builder createNotification(String notificationTitle, String notificationBody, PendingIntent pendingIntent) {
         return new NotificationCompat.Builder(getApplicationContext())
             .setAutoCancel(true)
-            .setSmallIcon(R.drawable.football)
+            .setSmallIcon(R.drawable.ic_stat_ball)
+            .setColor(getResources().getColor(R.color.colorAccent))
             .setContentTitle(notificationTitle)
             .setContentIntent(pendingIntent)
             .setContentText(notificationBody);
